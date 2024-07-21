@@ -67,7 +67,7 @@
 </head>
 <body>
 
-    <div id="weatherInfo">正在加载天气数据...</div>
+    <div id="weatherInfo"><h2><strong><center>正在加载天气数据...</strong></center></h2></div>
     <div class="weather-card" id="temperatureChartContainer">
         <h2>未来小时气温和湿度预报</h2>
         <canvas id="temperatureChart"></canvas>
@@ -79,7 +79,7 @@
     <script>
         function fetchWeather() {
             const script = document.createElement('script');
-            script.src = 'https://api.caiyunapp.com/v2.6/23333333/110.84,30.34/weather?dailysteps=5&hourlysteps=48&callback=displayWeather';
+            script.src = 'https://api.caiyunapp.com/v2.6/密钥/经纬度/weather?dailysteps=5&hourlysteps=48&callback=displayWeather';
             document.body.appendChild(script);
         }
 
@@ -93,61 +93,58 @@
 
                 html += '<div class="weather-card">';
                 html += '<h2>实时天气</h2>';
+				html += '<br>';
 				const date = new Date(serverTime * 1000);
-html += `<li><center><strong>获取时间: ${date.toLocaleString()}</strong></center></li>`;
+                html += `<p><center>获取时间: ${date.toLocaleString()}</center></p>`;
+				html += `<li><center><strong style="color:#f0768b;">${data.result.forecast_keypoint}</strong></center></li>`;
                 html += '<div class="weather-info">';
-                
-                html += `<p><strong>温度:</strong> ${realtime.temperature.toFixed(2)}°C</p>`;
-html += `<p><strong>体感温度:</strong> ${realtime.apparent_temperature.toFixed(2)}°C</p>`;
-html += `<p><strong>湿度:</strong> ${(realtime.humidity * 100).toFixed(0)}%</p>`;
-html += `<p><strong>舒适度:</strong> ${realtime.life_index.comfort.desc}</p>`;
-html += `<p><strong>天气状况:</strong> ${getSkyconDescription(realtime.skycon)}</p>`;
-html += `<p><strong>能见度:</strong> ${realtime.visibility.toFixed(1)}km</p>`;
-html += `<p><strong>紫外线指数:</strong> ${realtime.life_index.ultraviolet.index} (${realtime.life_index.ultraviolet.desc})</p>`;
-html += `<p><strong>总云量:</strong> ${(realtime.cloudrate * 100).toFixed(0)}%</p>`;
-html += `<p><strong>风速:</strong> ${realtime.wind.speed.toFixed(2)}km/h</p>`;
-html += `<p><strong>风向:</strong> ${getWindDirection(realtime.wind.direction)}</p>`;
-html += `<p><strong>气压:</strong> ${(realtime.pressure / 100).toFixed(2)} hPa</p>`;
-html += `<p><strong>AQI:</strong> ${realtime.air_quality.aqi.chn} (${realtime.air_quality.description.chn})</p>`;
-html += `<p><strong>PM2.5:</strong> ${realtime.air_quality.pm25} μg/m³</p>`;
-html += `<p><strong>PM10:</strong> ${realtime.air_quality.pm10} μg/m³</p>`;
-html += `<p><strong>臭氧浓度:</strong> ${realtime.air_quality.o3} μg/m³</p>`;
-html += `<p><strong>一氧化碳浓度:</strong> ${realtime.air_quality.co} mg/m³</p>`;
-html += `<p><strong>二氧化氮浓度:</strong> ${realtime.air_quality.no2} μg/m³</p>`;
-html += `<p><strong>二氧化硫浓度:</strong> ${realtime.air_quality.so2} μg/m³</p>`;
-html += `<p><strong>最近降水带距离:</strong> ${realtime.precipitation.nearest.distance.toFixed(2)} km</p>`;
-html += `<p><strong>最近降水强度:</strong> ${realtime.precipitation.nearest.intensity.toFixed(2)} mm/h</p>`;
-html += `<p><strong>本地降水强度:</strong> ${realtime.precipitation.local.intensity.toFixed(2)} mm/h</p>`;
-
-
-
+                html += `<p><strong>温度:</strong> ${realtime.temperature.toFixed(2)}°C / <strong>体感:</strong> ${realtime.apparent_temperature.toFixed(2)}°C</p>`;
+                html += `<p><strong>湿度:</strong> ${(realtime.humidity * 100).toFixed(0)}% / <strong>舒适度:</strong> ${realtime.life_index.comfort.desc}</p>`;
+                html += `<p><strong>天气状况:</strong> ${getSkyconDescription(realtime.skycon)}</p>`;
+                html += `<p><strong>能见度:</strong> ${realtime.visibility.toFixed(1)}km</p>`;
+                html += `<p><strong>紫外线指数:</strong> ${realtime.life_index.ultraviolet.index}【${realtime.life_index.ultraviolet.desc}】</p>`;
+                html += `<p><strong>总云量:</strong> ${(realtime.cloudrate * 100).toFixed(0)}%</p>`;
+				const windLevelAndName = getWindLevelAndName(realtime.wind.speed.toFixed(2));
+				html += `<p><strong>风速:</strong> ${realtime.wind.speed.toFixed(2)} km/h【${windLevelAndName}】</p>`;
+				html += `<p><strong>风向:</strong> ${getWindDirection(realtime.wind.direction)}</p>`;
+                html += `<p><strong>气压:</strong> ${(realtime.pressure / 100).toFixed(2)} hPa</p>`;
+                html += `<p><strong>AQI:</strong> ${realtime.air_quality.aqi.chn}【${realtime.air_quality.description.chn}】</p>`;
+                html += `<p><strong>PM2.5:</strong> ${realtime.air_quality.pm25} μg/m³</p>`;
+                html += `<p><strong>PM10:</strong> ${realtime.air_quality.pm10} μg/m³</p>`;
+                html += `<p><strong>臭氧浓度:</strong> ${realtime.air_quality.o3} μg/m³</p>`;
+                html += `<p><strong>一氧化碳浓度:</strong> ${realtime.air_quality.co} mg/m³</p>`;
+                html += `<p><strong>二氧化氮浓度:</strong> ${realtime.air_quality.no2} μg/m³</p>`;
+                html += `<p><strong>二氧化硫浓度:</strong> ${realtime.air_quality.so2} μg/m³</p>`;
+                html += `<p><strong>最近降水带距离:</strong> ${realtime.precipitation.nearest.distance.toFixed(2)} km</p>`;
+                html += `<p><strong>最近降水强度:</strong> ${realtime.precipitation.nearest.intensity.toFixed(2)} mm/h</p>`;
+                html += `<p><strong>本地降水强度:</strong> ${realtime.precipitation.local.intensity.toFixed(2)} mm/h</p>`;
                 html += '</div></div>';
 
                 // 小时级降水预报
-html += '<div class="weather-card">';
-html += '<h2>小时级降水预报</h2>';
-html += '<ul class="precipitation-info">';
-const hourly = data.result.hourly;
-if (hourly && hourly.precipitation) {
-    let hasPrecipitation = false;
-    hourly.precipitation.forEach((precipitation) => {
-        if (precipitation.value > 0) {
-            hasPrecipitation = true;
-            const datetime = new Date(precipitation.datetime);
-            const month = datetime.getMonth() + 1; // 月份从0开始，所以要加1
-            const day = datetime.getDate();
-            const hour = datetime.getHours();
-            const formattedDate = `${month}月${day}日${hour}点`;
-            html += `<li><strong>${formattedDate}:</strong> 降水量 ${precipitation.value.toFixed(2)} mm / 降水概率 ${precipitation.probability}%</li>`;
-        }
-    });
-    if (!hasPrecipitation) {
-        html += '<li>未来48小时内无降水</li>';
-    }
-} else {
-    html += '<li>暂无数据</li>';
-}
-html += '</ul></div>';
+                html += '<div class="weather-card">';
+                html += '<h2>小时级降水预报</h2>';
+                html += '<ul class="precipitation-info">';
+                const hourly = data.result.hourly;
+                if (hourly && hourly.precipitation) {
+                let hasPrecipitation = false;
+                hourly.precipitation.forEach((precipitation) => {
+                if (precipitation.value > 0) {
+                hasPrecipitation = true;
+                const datetime = new Date(precipitation.datetime);
+                const month = datetime.getMonth() + 1; // 月份从0开始，所以要加1
+                const day = datetime.getDate();
+                const hour = datetime.getHours();
+                const formattedDate = `${month}月${day}日${hour}时`;
+                html += `<li><strong>${formattedDate}:</strong> 降水量 ${precipitation.value.toFixed(2)} mm / 降水概率 ${precipitation.probability}%</li>`;
+                }
+                });
+                if (!hasPrecipitation) {
+                html += '<li>未来48小时内无降水</li>';
+                }
+                } else {
+                html += '<li>暂无数据</li>';
+                }
+                html += '</ul></div>';
 
 
                 // 未来3天预报
@@ -155,25 +152,27 @@ html += '</ul></div>';
                 html += '<h2>未来3天预报</h2>';
                 const daily = data.result.daily;
 
-                if (daily && daily.temperature && daily.skycon && daily.air_quality && daily.wind) {
-                    daily.temperature.slice(0, 3).forEach((temp, index) => {
-                        if (daily.skycon[index] && daily.air_quality.aqi[index] && daily.wind[index]) {
-                            const date = new Date(temp.date);
-                            const formattedDate = `${date.getMonth() + 1}月${date.getDate()}日`;
-                            
-                            const skycon = getSkyconDescription(daily.skycon[index].value);
-                            const aqi = daily.air_quality.aqi[index].avg ? daily.air_quality.aqi[index].avg.chn : '无数据';
-                            const windSpeed = daily.wind[index].avg ? daily.wind[index].avg.speed.toFixed(1) : '无数据';
-                            const windDirection = daily.wind[index].avg ? getWindDirection(daily.wind[index].avg.direction) : '无数据';
+                if (daily && daily.temperature && daily.skycon && daily.air_quality && daily.wind && daily.astro) {
+                daily.temperature.slice(0, 3).forEach((temp, index) => {
+                if (daily.skycon[index] && daily.air_quality.aqi[index] && daily.wind[index] && daily.astro[index]) {
+                const date = new Date(temp.date);
+                const formattedDate = `${date.getMonth() + 1}月${date.getDate()}日`;
 
-                            html += `<li><strong>${formattedDate}</strong>: ${temp.min.toFixed(1)}°C ~ ${temp.max.toFixed(1)}°C, ${skycon}, AQI: ${aqi}, 风速: ${windSpeed} km/h ${windDirection}</li>`;
-                        }
-                    });
-                } else {
-                    html += '<p>未来天气数据获取失败</p>';
+                const skycon = getSkyconDescription(daily.skycon[index].value);
+                const aqi = daily.air_quality.aqi[index].avg ? daily.air_quality.aqi[index].avg.chn : '无数据';
+                const windSpeed = daily.wind[index].avg ? daily.wind[index].avg.speed.toFixed(2) : '无数据';
+                const windDirection = daily.wind[index].avg ? getWindDirection(daily.wind[index].avg.direction) : '无数据';
+                const sunrise = daily.astro[index].sunrise.time;
+                const sunset = daily.astro[index].sunset.time;
+
+                html += `<li><strong>${formattedDate}</strong>: 【<strong style="color:#1E90FF;">${temp.min.toFixed(2)}°C</strong> ~ <strong style="color:#FF4500;">${temp.max.toFixed(2)}°C</strong>】/ ${skycon} / AQI: ${aqi} / 风速: ${windSpeed} km/h 【${windLevelAndName}】/ ${windDirection}风 / 日出: ${sunrise}, 日落: ${sunset}</li>`;
                 }
-
+                });
+                } else {
+                html += '<p>未来天气数据获取失败</p>';
+                }
                 html += '</div>';
+
 
                 // 生成气温和湿度折线图
                 const temperatureData = data.result.hourly.temperature;
@@ -181,7 +180,7 @@ html += '</ul></div>';
 
                 const labels = temperatureData.map(temp => {
                     const date = new Date(temp.datetime);
-                    return `${date.getDate()}日${date.getHours()}点`;
+                    return `${date.getDate()}日${date.getHours()}时`;
                 });
 
                 const temperatureValues = temperatureData.map(temp => temp.value);
@@ -301,9 +300,36 @@ html += '</ul></div>';
             const directions = ['北', '东北', '东', '东南', '南', '西南', '西', '西北'];
             return directions[Math.round(degree / 45) % 8];
         }
+		
+		function getWindLevelAndName(speedKmH) {
+    const windLevels = [
+        { level: 0, name: '无风', min: 0, max: 0.9 },
+        { level: 1, name: '软风', min: 1, max: 5 },
+        { level: 2, name: '轻风', min: 6, max: 11 },
+        { level: 3, name: '微风', min: 12, max: 19 },
+        { level: 4, name: '和风', min: 20, max: 28 },
+        { level: 5, name: '清风', min: 29, max: 38 },
+        { level: 6, name: '强风', min: 39, max: 49 },
+        { level: 7, name: '劲风', min: 50, max: 61 },
+        { level: 8, name: '大风', min: 62, max: 74 },
+        { level: 9, name: '烈风', min: 75, max: 88 },
+        { level: 10, name: '狂风', min: 89, max: 102 },
+        { level: 11, name: '暴风', min: 103, max: 117 },
+        { level: 12, name: '台风', min: 118, max: Infinity }
+    ];
+
+    for (let i = 0; i < windLevels.length; i++) {
+        if (speedKmH >= windLevels[i].min && speedKmH <= windLevels[i].max) {
+            return `${windLevels[i].level}级/${windLevels[i].name}`;
+        }
+    }
+    return '未知风力';
+}
+
 
         // 页面加载完成后获取天气信息
         window.onload = fetchWeather;
     </script>
+	<div class="weather-card">彩云API申请：https://docs.caiyunapp.com/weather-api/index.html<br><br>本项目更新：https://github.com/Naivev/caiyunhtml</div>
 </body>
 </html>
