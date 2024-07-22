@@ -79,7 +79,7 @@
     <script>
         function fetchWeather() {
             const script = document.createElement('script');
-            script.src = 'https://api.caiyunapp.com/v2.6/密钥/经纬度/weather?dailysteps=5&hourlysteps=48&callback=displayWeather';
+            script.src = 'https://api.caiyunapp.com/v2.6/密钥/经纬度/weather?unit=metric:v2&callback=displayWeather';
             document.body.appendChild(script);
         }
 
@@ -93,10 +93,10 @@
 
                 html += '<div class="weather-card">';
                 html += '<h2>实时天气</h2>';
-				html += '<br>';
-				const date = new Date(serverTime * 1000);
+                html += '<br>';
+                const date = new Date(serverTime * 1000);
                 html += `<p><center>获取时间: ${date.toLocaleString()}</center></p>`;
-				html += `<li><center><strong style="color:#f0768b;">${data.result.forecast_keypoint}</strong></center></li>`;
+                html += `<li><center><strong style="color:#f0768b;">${data.result.forecast_keypoint}</strong></center></li>`;
                 html += '<div class="weather-info">';
                 html += `<p><strong>温度:</strong> ${realtime.temperature.toFixed(2)}°C / <strong>体感:</strong> ${realtime.apparent_temperature.toFixed(2)}°C</p>`;
                 html += `<p><strong>湿度:</strong> ${(realtime.humidity * 100).toFixed(0)}% / <strong>舒适度:</strong> ${realtime.life_index.comfort.desc}</p>`;
@@ -104,9 +104,9 @@
                 html += `<p><strong>能见度:</strong> ${realtime.visibility.toFixed(1)}km</p>`;
                 html += `<p><strong>紫外线指数:</strong> ${realtime.life_index.ultraviolet.index}【${realtime.life_index.ultraviolet.desc}】</p>`;
                 html += `<p><strong>总云量:</strong> ${(realtime.cloudrate * 100).toFixed(0)}%</p>`;
-				const windLevelAndName = getWindLevelAndName(realtime.wind.speed.toFixed(2));
-				html += `<p><strong>风速:</strong> ${realtime.wind.speed.toFixed(2)} km/h【${windLevelAndName}】</p>`;
-				html += `<p><strong>风向:</strong> ${getWindDirection(realtime.wind.direction)}</p>`;
+                const windLevelAndName = getWindLevelAndName(realtime.wind.speed.toFixed(1));
+                html += `<p><strong>风速:</strong> ${realtime.wind.speed.toFixed(1)} km/h【${windLevelAndName}】</p>`;
+                html += `<p><strong>风向:</strong> ${getWindDirection(realtime.wind.direction)}</p>`;
                 html += `<p><strong>气压:</strong> ${(realtime.pressure / 100).toFixed(2)} hPa</p>`;
                 html += `<p><strong>AQI:</strong> ${realtime.air_quality.aqi.chn}【${realtime.air_quality.description.chn}】</p>`;
                 html += `<p><strong>PM2.5:</strong> ${realtime.air_quality.pm25} μg/m³</p>`;
@@ -115,9 +115,9 @@
                 html += `<p><strong>一氧化碳浓度:</strong> ${realtime.air_quality.co} mg/m³</p>`;
                 html += `<p><strong>二氧化氮浓度:</strong> ${realtime.air_quality.no2} μg/m³</p>`;
                 html += `<p><strong>二氧化硫浓度:</strong> ${realtime.air_quality.so2} μg/m³</p>`;
-                html += `<p><strong>最近降水带距离:</strong> ${realtime.precipitation.nearest.distance.toFixed(2)} km</p>`;
-                html += `<p><strong>最近降水强度:</strong> ${realtime.precipitation.nearest.intensity.toFixed(2)} mm/h</p>`;
-                html += `<p><strong>本地降水强度:</strong> ${realtime.precipitation.local.intensity.toFixed(2)} mm/h</p>`;
+                html += `<p><strong>最近降水带距离:</strong> ${realtime.precipitation.nearest.distance.toFixed(0)} km</p>`;
+                html += `<p><strong>最近降水强度:</strong> ${realtime.precipitation.nearest.intensity.toFixed(1)} mm/h</p>`;
+                html += `<p><strong>本地降水强度:</strong> ${realtime.precipitation.local.intensity.toFixed(1)} mm/h</p>`;
                 html += '</div></div>';
 
                 // 小时级降水预报
@@ -135,7 +135,7 @@
                 const day = datetime.getDate();
                 const hour = datetime.getHours();
                 const formattedDate = `${month}月${day}日${hour}时`;
-                html += `<li><strong>${formattedDate}:</strong> 降水量 ${precipitation.value.toFixed(2)} mm / 降水概率 ${precipitation.probability}%</li>`;
+                html += `<li><strong>${formattedDate}:</strong> 预计降水量 ${precipitation.value.toFixed(1)} mm/h，降水概率 ${precipitation.probability}%</li>`;
                 }
                 });
                 if (!hasPrecipitation) {
@@ -160,7 +160,7 @@
 
                 const skycon = getSkyconDescription(daily.skycon[index].value);
                 const aqi = daily.air_quality.aqi[index].avg ? daily.air_quality.aqi[index].avg.chn : '无数据';
-                const windSpeed = daily.wind[index].avg ? daily.wind[index].avg.speed.toFixed(2) : '无数据';
+                const windSpeed = daily.wind[index].avg ? daily.wind[index].avg.speed.toFixed(1) : '无数据';
                 const windDirection = daily.wind[index].avg ? getWindDirection(daily.wind[index].avg.direction) : '无数据';
                 const sunrise = daily.astro[index].sunrise.time;
                 const sunset = daily.astro[index].sunset.time;
@@ -302,30 +302,29 @@
         }
 		
 		function getWindLevelAndName(speedKmH) {
-    const windLevels = [
+		const windLevels = [
         { level: 0, name: '无风', min: 0, max: 0.9 },
-        { level: 1, name: '软风', min: 1, max: 5 },
-        { level: 2, name: '轻风', min: 6, max: 11 },
-        { level: 3, name: '微风', min: 12, max: 19 },
-        { level: 4, name: '和风', min: 20, max: 28 },
-        { level: 5, name: '清风', min: 29, max: 38 },
-        { level: 6, name: '强风', min: 39, max: 49 },
-        { level: 7, name: '劲风', min: 50, max: 61 },
-        { level: 8, name: '大风', min: 62, max: 74 },
-        { level: 9, name: '烈风', min: 75, max: 88 },
-        { level: 10, name: '狂风', min: 89, max: 102 },
-        { level: 11, name: '暴风', min: 103, max: 117 },
+        { level: 1, name: '软风', min: 1, max: 5.9 },
+        { level: 2, name: '轻风', min: 6, max: 11.9 },
+        { level: 3, name: '微风', min: 12, max: 19.9 },
+        { level: 4, name: '和风', min: 20, max: 28.9 },
+        { level: 5, name: '清风', min: 29, max: 38.9 },
+        { level: 6, name: '强风', min: 39, max: 49.9 },
+        { level: 7, name: '劲风', min: 50, max: 61.9 },
+        { level: 8, name: '大风', min: 62, max: 74.9 },
+        { level: 9, name: '烈风', min: 75, max: 88.9 },
+        { level: 10, name: '狂风', min: 89, max: 102.9 },
+        { level: 11, name: '暴风', min: 103, max: 117.9 },
         { level: 12, name: '台风', min: 118, max: Infinity }
-    ];
+		];
 
-    for (let i = 0; i < windLevels.length; i++) {
+		for (let i = 0; i < windLevels.length; i++) {
         if (speedKmH >= windLevels[i].min && speedKmH <= windLevels[i].max) {
             return `${windLevels[i].level}级/${windLevels[i].name}`;
         }
-    }
-    return '未知风力';
-}
-
+		}
+		return '未知风力';
+		}
 
         // 页面加载完成后获取天气信息
         window.onload = fetchWeather;
