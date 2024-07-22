@@ -48,6 +48,9 @@
         .precipitation-info li:last-child {
             border-bottom: none;
         }
+		.single-item li {
+		border-bottom: 1px solid #ecf0f1 !important; /* 强制显示下划线 */
+		}
         #temperatureChartContainer {
             height: 400px;
         }
@@ -63,7 +66,6 @@
             }
         }
     </style>
-	<ul class="precipitation-info">
 </head>
 <body>
 
@@ -96,17 +98,17 @@
                 html += '<br>';
                 const date = new Date(serverTime * 1000);
                 html += `<p><center>获取时间: ${date.toLocaleString()}</center></p>`;
-                html += `<li><center><strong style="color:#f0768b;">${data.result.forecast_keypoint}</strong></center></li>`;
+                html += `<ul class="precipitation-info single-item"><li><center><strong style="color:#f0768b; font-size: 18px;">${data.result.forecast_keypoint}</strong></center></li></ul>`;
                 html += '<div class="weather-info">';
-                html += `<p><strong>温度:</strong> ${realtime.temperature.toFixed(2)}°C / <strong>体感:</strong> ${realtime.apparent_temperature.toFixed(2)}°C</p>`;
+                html += `<p><strong>温度:</strong> ${realtime.temperature.toFixed(2)}°C / <strong>体感:</strong>${realtime.apparent_temperature.toFixed(2)}°C</p>`;
                 html += `<p><strong>湿度:</strong> ${(realtime.humidity * 100).toFixed(0)}% / <strong>舒适度:</strong> ${realtime.life_index.comfort.desc}</p>`;
-                html += `<p><strong>天气状况:</strong> ${getSkyconDescription(realtime.skycon)}</p>`;
+                html += `<p><strong>天气状况:</strong> ${getSkyconDescription(realtime.skycon)} / ${getWindDirection(realtime.wind.direction)}风</p>`;
+                const windSpeed = realtime.wind.speed.toFixed(1);
+                const windLevelAndName = getWindLevelAndName(windSpeed);
+                html += `<p><strong>风速:</strong> ${windSpeed} km/h【${windLevelAndName}】</p>`;
                 html += `<p><strong>能见度:</strong> ${realtime.visibility.toFixed(1)}km</p>`;
                 html += `<p><strong>紫外线指数:</strong> ${realtime.life_index.ultraviolet.index}【${realtime.life_index.ultraviolet.desc}】</p>`;
                 html += `<p><strong>总云量:</strong> ${(realtime.cloudrate * 100).toFixed(0)}%</p>`;
-                const windLevelAndName = getWindLevelAndName(realtime.wind.speed.toFixed(1));
-                html += `<p><strong>风速:</strong> ${realtime.wind.speed.toFixed(1)} km/h【${windLevelAndName}】</p>`;
-                html += `<p><strong>风向:</strong> ${getWindDirection(realtime.wind.direction)}</p>`;
                 html += `<p><strong>气压:</strong> ${(realtime.pressure / 100).toFixed(2)} hPa</p>`;
                 html += `<p><strong>AQI:</strong> ${realtime.air_quality.aqi.chn}【${realtime.air_quality.description.chn}】</p>`;
                 html += `<p><strong>PM2.5:</strong> ${realtime.air_quality.pm25} μg/m³</p>`;
@@ -121,30 +123,28 @@
                 html += '</div></div>';
 
                 // 小时级降水预报
-                html += '<div class="weather-card">';
-                html += '<h2>小时级降水预报</h2>';
-                html += '<ul class="precipitation-info">';
-                const hourly = data.result.hourly;
-                if (hourly && hourly.precipitation) {
-                let hasPrecipitation = false;
-                hourly.precipitation.forEach((precipitation) => {
-                if (precipitation.value > 0) {
-                hasPrecipitation = true;
-                const datetime = new Date(precipitation.datetime);
-                const month = datetime.getMonth() + 1; // 月份从0开始，所以要加1
-                const day = datetime.getDate();
-                const hour = datetime.getHours();
-                const formattedDate = `${month}月${day}日${hour}时`;
-                html += `<li><strong>${formattedDate}:</strong> 降水量 ${precipitation.value.toFixed(1)} mm/h，降水概率 ${precipitation.probability}%</li>`;
+				html += `<div class="weather-card"><h2>小时级降水预报</h2>${renderPrecipitationForecast(data.result.hourly)}</div>`;
+
+                function formatDateTime(datetime) {
+                const date = new Date(datetime);
+                return `${date.getMonth() + 1}月${date.getDate()}日${date.getHours()}时`;
                 }
-                });
-                if (!hasPrecipitation) {
-                html += '<p><center><strong style="color:#228B22;">未来48小时内无降水</strong></center></p>';
+
+                function renderPrecipitationForecast(hourly) {
+                if (!hourly || !hourly.precipitation || !Array.isArray(hourly.precipitation)) {
+                return '<p><center><strong style="color:#DC143C;">暂无数据</strong></center></p>';
                 }
-                } else {
-                html += '<p><center><strong style="color:#DC143C;">暂无数据</strong></center></p>';
+
+                const precipitationItems = hourly.precipitation
+				.filter(precip => precip.value >= 0.05)
+                .map(precip => `<li><strong>${formatDateTime(precip.datetime)}:</strong> 降水量 ${precip.value.toFixed(1)} mm/h，降水概率 ${precip.probability}%</li>`);
+
+                if (precipitationItems.length === 0) {
+                return '<p><center><strong style="color:#228B22;">未来48小时内无降水</strong></center></p>';
                 }
-                html += '</ul></div>';
+
+                return `<ul class="precipitation-info">${precipitationItems.join('')}</ul>`;
+                }
 
 
                 // 未来3天预报
@@ -153,6 +153,7 @@
                 const daily = data.result.daily;
 
                 if (daily && daily.temperature && daily.skycon && daily.air_quality && daily.wind && daily.astro) {
+				html += '<ul class="precipitation-info">';
                 daily.temperature.slice(0, 3).forEach((temp, index) => {
                 if (daily.skycon[index] && daily.air_quality.aqi[index] && daily.wind[index] && daily.astro[index]) {
                 const date = new Date(temp.date);
@@ -165,9 +166,10 @@
                 const sunrise = daily.astro[index].sunrise.time;
                 const sunset = daily.astro[index].sunset.time;
 
-                html += `<li><strong>${formattedDate}</strong>: 【<strong style="color:#1E90FF;">${temp.min.toFixed(2)}°C</strong> ~ <strong style="color:#FF4500;">${temp.max.toFixed(2)}°C</strong>】/ ${skycon} / AQI: ${aqi} / 风速: ${windSpeed} km/h 【${windLevelAndName}】/ ${windDirection}风 / 日出: ${sunrise}, 日落: ${sunset}</li>`;
+                html += `<li><strong>${formattedDate}</strong>: 【<strong style="color:#1E90FF;">${temp.min.toFixed(1)}°C</strong> ~ <strong style="color:#FF4500;">${temp.max.toFixed(1)}°C</strong>】/ ${skycon} / AQI: ${aqi} / 风速: ${windSpeed} km/h 【${windLevelAndName}】/ ${windDirection}风 / 日出: ${sunrise}, 日落: ${sunset}</li>`;
                 }
                 });
+				html += '</ul>';
                 } else {
                 html += '<p>未来天气数据获取失败</p>';
                 }
@@ -328,6 +330,38 @@
 
         // 页面加载完成后获取天气信息
         window.onload = fetchWeather;
+		
+		// 自动刷新和倒计时脚本
+		const refreshInterval = 5 * 60 * 1000; // 5分钟
+		let timeLeft = refreshInterval / 1000;
+
+		function updateCountdown() {
+		const minutes = Math.floor(timeLeft / 60);
+		const seconds = timeLeft % 60;
+		document.getElementById('countdown').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+		if (timeLeft > 0) {
+        timeLeft--;
+        setTimeout(updateCountdown, 1000);
+		} else {
+        location.reload();
+		}
+		}
+
+		// 创建倒计时显示元素
+		const countdownDiv = document.createElement('div');
+		countdownDiv.id = 'countdown';
+		countdownDiv.style.position = 'fixed';
+		countdownDiv.style.top = '10px';
+		countdownDiv.style.right = '10px';
+		countdownDiv.style.background = 'rgba(0,0,0,0.5)';
+		countdownDiv.style.color = 'white';
+		countdownDiv.style.padding = '5px 10px';
+		countdownDiv.style.borderRadius = '5px';
+		document.body.appendChild(countdownDiv);
+
+		// 开始倒计时
+		updateCountdown();
+		
     </script>
 	<div class="weather-card">彩云API申请：https://docs.caiyunapp.com/weather-api/index.html<br><br>本项目更新：https://github.com/Naivev/caiyunhtml</div>
 </body>
