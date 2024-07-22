@@ -135,7 +135,7 @@
                 const day = datetime.getDate();
                 const hour = datetime.getHours();
                 const formattedDate = `${month}月${day}日${hour}时`;
-                html += `<li><strong>${formattedDate}:</strong> 预计降水量 ${precipitation.value.toFixed(1)} mm/h，降水概率 ${precipitation.probability}%</li>`;
+                html += `<li><strong>${formattedDate}:</strong> 降水量 ${precipitation.value.toFixed(1)} mm/h，降水概率 ${precipitation.probability}%</li>`;
                 }
                 });
                 if (!hasPrecipitation) {
