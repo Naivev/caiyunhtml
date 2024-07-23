@@ -313,7 +313,7 @@ new Chart(ctx, {
                         } else if (context.dataset.label === '气温 (°C)' && context.parsed.y !== null) {
                             label += `${context.parsed.y.toFixed(1)}°C`;
                         } else if (context.dataset.label === '湿度 (%)' && context.parsed.y !== null) {
-                            label += `${context.parsed.y}%`;
+                            label += `${context.parsed.y.toFixed(0)}%`;
                         }
                         return label;
                     }
