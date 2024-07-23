@@ -1,4 +1,7 @@
-105行换成自己的api密钥和经纬度。
+104行换成自己的api密钥和经纬度。
+
+例如：把https://api.caiyunapp.com/v2.6/密钥/经纬度/weather?unit=metric:v2&callback=displayWeather
+换成：https://api.caiyunapp.com/v2.6/abcdefg/120.20,30.33/weather?unit=metric:v2&callback=displayWeather 即可
 
 免费api只能看最近两天的预报，我也没招，能用就行。
 
