@@ -8,4 +8,4 @@
 
 本地html，直接保存到本地用记事本改完api密钥和经纬度用浏览器打开就行。
 ![image](https://github.com/user-attachments/assets/fdefc378-d64c-49b5-ba1a-9b0b6f5715df)
-![image](https://github.com/user-attachments/assets/1e9785c6-98c4-4f3c-b67f-b6ecc22c32a1)
+![image](https://github.com/user-attachments/assets/5f1a83f8-107c-496d-ab3b-af66c5574697)
