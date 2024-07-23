@@ -76,8 +76,8 @@
 		}
         #fullscreenButton {
         position: absolute;
-        bottom: 6px; /* 从容器底部边缘向上移动 10 像素 */
-        right: 6px;  /* 从容器右边缘向左移动 10 像素 */
+        bottom: 6px;
+        right: 6px;
         padding: 8px 12px;
         border: none;
         background-color: #007bff;
@@ -166,30 +166,27 @@
                 html += '<p>未来天气数据获取失败</p>';
                 }
                 html += '</div>';
-				
-// 获取数据
-const temperatureData = data.result.hourly.temperature;
-const humidityData = data.result.hourly.humidity;
-const precipitationData = data.result.hourly.precipitation;
 
-// 生成标签
-const labels = temperatureData.map(temp => {
-    const date = new Date(temp.datetime);
-    return `${date.getDate()}日${date.getHours()}时`;
-});
-
-// 获取数据值
-const temperatureValues = temperatureData.map(temp => temp.value);
-const humidityValues = humidityData.map(hum => hum.value * 100);
-const precipitationValues = precipitationData.map(prec => prec.value);
-
-// 创建图表
-const ctx = document.getElementById('temperatureChart').getContext('2d');
-new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: labels,
-        datasets: [
+                // 获取数据
+                const temperatureData = data.result.hourly.temperature;
+                const humidityData = data.result.hourly.humidity;
+                const precipitationData = data.result.hourly.precipitation;
+                // 生成标签
+                const labels = temperatureData.map(temp => {
+                    const date = new Date(temp.datetime);
+                    return `${date.getDate()}日${date.getHours()}时`;
+                });
+                // 获取数据值
+                const temperatureValues = temperatureData.map(temp => temp.value);
+                const humidityValues = humidityData.map(hum => hum.value * 100);
+                const precipitationValues = precipitationData.map(prec => prec.value);
+                // 创建图表
+                const ctx = document.getElementById('temperatureChart').getContext('2d');
+                new Chart(ctx, {
+                type: 'line',
+                data: {
+                labels: labels,
+                datasets: [
             {
                 label: '气温 (°C)',
                 data: temperatureValues,
@@ -222,15 +219,15 @@ new Chart(ctx, {
             }
         ]
     },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        interaction: {
-            mode: 'index',
-            intersect: false,
-        },
-        scales: {
-            x: {
+                options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                mode: 'index',
+                intersect: false,
+                        },
+                scales: {
+                x: {
                 title: {
                     display: true,
                     text: ''
@@ -239,8 +236,8 @@ new Chart(ctx, {
                     maxRotation: 45,
                     minRotation: 45
                 }
-            },
-            y1: {
+                },
+                y1: {
                 type: 'linear',
                 display: true,
                 position: 'left',
@@ -253,8 +250,8 @@ new Chart(ctx, {
                         return value + '°C';
                     }
                 }
-            },
-            y2: {
+                },
+                y2: {
                 type: 'linear',
                 display: true,
                 position: 'right',
@@ -270,8 +267,8 @@ new Chart(ctx, {
                         return value + '%';
                     }
                 }
-            },
-            y3: {
+                },
+                y3: {
                 type: 'linear',
                 display: true,
                 position: 'right',
@@ -322,33 +319,31 @@ new Chart(ctx, {
         }
     }
 });
-// 添加全屏功能
-const fullscreenButton = document.getElementById('fullscreenButton');
+                // 添加全屏功能
+                const fullscreenButton = document.getElementById('fullscreenButton');
+                fullscreenButton.addEventListener('click', () => {
+                const chartContainer = document.getElementById('temperatureChart').parentElement;
 
-fullscreenButton.addEventListener('click', () => {
-    const chartContainer = document.getElementById('temperatureChart').parentElement;
-
-    if (!document.fullscreenElement) {
-        chartContainer.requestFullscreen().catch(err => {
-            console.error(`Failed to enter fullscreen mode: ${err.message}`);
-        });
-    } else {
-        document.exitFullscreen().catch(err => {
-            console.error(`Failed to exit fullscreen mode: ${err.message}`);
-        });
-    }
-});
-} else {
-    html = '<p>获取天气数据失败，请稍后再试。</p>';
-}
-
+                if (!document.fullscreenElement) {
+                chartContainer.requestFullscreen().catch(err => {
+                console.error(`Failed to enter fullscreen mode: ${err.message}`);
+                });
+                } else {
+                document.exitFullscreen().catch(err => {
+                console.error(`Failed to exit fullscreen mode: ${err.message}`);
+                });
+                }
+                });
+                } else {
+                html = '<p>获取天气数据失败，请稍后再试。</p>';
+                }
 
             weatherInfo.innerHTML = html;
         }
 		
-		// 获取天气
-        function getSkyconDescription(skycon) {
-            const skyconMap = {
+                // 获取天气
+                function getSkyconDescription(skycon) {
+                const skyconMap = {
                 'CLEAR_DAY': '晴天',
                 'CLEAR_NIGHT': '晴夜',
                 'PARTLY_CLOUDY_DAY': '多云',
@@ -447,30 +442,27 @@ fullscreenButton.addEventListener('click', () => {
 		}
 		}
 
-// 创建倒计时显示元素
-const countdownDiv = document.createElement('div');
-countdownDiv.id = 'countdown';
-countdownDiv.style.position = 'fixed'; // 确保元素在视口内固定位置
-countdownDiv.style.top = '10px';
-countdownDiv.style.left = '10px';
-countdownDiv.style.background = 'rgba(0,0,0,0.5)';
-countdownDiv.style.color = 'white';
-countdownDiv.style.padding = '5px 10px';
-countdownDiv.style.borderRadius = '5px';
-countdownDiv.style.zIndex = '9999'; // 设置一个高的 z-index 确保元素在最上层
-document.body.appendChild(countdownDiv);
+                // 创建倒计时显示元素
+                const countdownDiv = document.createElement('div');
+                countdownDiv.id = 'countdown';
+                countdownDiv.style.position = 'fixed'; // 确保元素在视口内固定位置
+                countdownDiv.style.top = '10px';
+                countdownDiv.style.left = '10px';
+                countdownDiv.style.background = 'rgba(0,0,0,0.5)';
+                countdownDiv.style.color = 'white';
+                countdownDiv.style.padding = '5px 10px';
+                countdownDiv.style.borderRadius = '5px';
+                countdownDiv.style.zIndex = '9999'; // 设置一个高的 z-index 确保元素在最上层
+                document.body.appendChild(countdownDiv);
+                // 开始倒计时
+				updateCountdown();
 
-// 开始倒计时
-updateCountdown();
-
-	
     </script>
 <div class="weather-card" id="temperatureChartContainer">
     <h2>小时级别气温/湿度/降水量预报</h2>
     <button id="fullscreenButton">图表全屏</button>
     <canvas id="temperatureChart"></canvas>
 </div>
-
 <div class="weather-card">彩云API更新频率：实况天气1分钟，小时级预报15分钟，天气级预报2小时，AQI数据1小时。<br><br> 本项目更新：https://github.com/Naivev/caiyunhtml</div>
 </body>
 </html>
