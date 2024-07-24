@@ -51,6 +51,9 @@
 		.single-item li {
 		border-bottom: 1px solid #ecf0f1 !important; /* 强制显示下划线 */
 		}
+		.warning-text {
+            line-height: 1.5;
+        }
         #temperatureChartContainer {
             height: 500px;
         }
@@ -119,7 +122,7 @@
                 html += `<p><center>获取时间: ${date.toLocaleString()}</center></p>`;
                 html += `<ul class="precipitation-info single-item"><li><center><strong style="color:#f0768b; font-size: 18px;">${data.result.forecast_keypoint}</strong></center></li></ul>`;
                 html += '<div class="weather-info">';
-                html += `<p><strong>温度:</strong> ${realtime.temperature.toFixed(2)}°C / <strong>体感:</strong>${realtime.apparent_temperature.toFixed(2)}°C</p>`;
+                html += `<p><strong>温度:</strong> ${realtime.temperature.toFixed(1)}°C / <strong>体感:</strong>${realtime.apparent_temperature.toFixed(1)}°C</p>`;
                 html += `<p><strong>湿度:</strong> ${(realtime.humidity * 100).toFixed(0)}% / <strong>舒适度:</strong> ${realtime.life_index.comfort.desc}</p>`;
                 html += `<p><strong>天气状况:</strong> ${getSkyconDescription(realtime.skycon)} - ${getWindDirection(realtime.wind.direction)}风</p>`;
                 const windSpeed = realtime.wind.speed.toFixed(1);
@@ -128,10 +131,10 @@
                 html += `<p><strong>能见度:</strong> ${realtime.visibility.toFixed(1)}km</p>`;
                 html += `<p><strong>紫外线级别:</strong> ${realtime.life_index.ultraviolet.index} - ${realtime.life_index.ultraviolet.desc}</p>`;
                 html += `<p><strong>气压:</strong> ${(realtime.pressure / 100).toFixed(2)} hPa</p>`;
-                html += `<p><strong>AQI:</strong> ${realtime.air_quality.aqi.chn} - ${realtime.air_quality.description.chn}</p>`;
+                html += `<p><strong>AQI:</strong> ${realtime.air_quality.aqi.usa} - ${realtime.air_quality.description.usa}（美国标准）</p>`;
                 html += `<p><strong>PM2.5:</strong> ${realtime.air_quality.pm25}μg/m³ / <strong>PM10:</strong> ${realtime.air_quality.pm10}μg/m³</p>`;
                 html += `<p><strong>O₃:</strong> ${realtime.air_quality.o3}μg/m³ / <strong>CO:</strong> ${realtime.air_quality.co}mg/m³</p>`;
-                html += `<p><strong>NO₂:</strong> ${realtime.air_quality.no2}μg/m³ / <strong>SO2:</strong> ${realtime.air_quality.so2}μg/m³</p>`;
+                html += `<p><strong>NO₂:</strong> ${realtime.air_quality.no2}μg/m³ / <strong>SO₂:</strong> ${realtime.air_quality.so2}μg/m³</p>`;
                 html += `<p><strong>最近降水带距离:</strong> ${realtime.precipitation.nearest.distance.toFixed(0)} km</p>`;
 				html += `<p><strong>最近降水处强度:</strong> ${realtime.precipitation.nearest.intensity.toFixed(1)}mm/h - ${getPrecipitationDescription(realtime.precipitation.nearest.intensity, realtime.skycon)}</p>`;
 				html += `<p><strong>本地降水强度:</strong> ${realtime.precipitation.local.intensity.toFixed(1)}mm/h - ${getPrecipitationDescription(realtime.precipitation.local.intensity, realtime.skycon)}</p>`;
@@ -158,7 +161,7 @@
                 const sunrise = daily.astro[index].sunrise.time;
                 const sunset = daily.astro[index].sunset.time;
 
-                html += `<li><strong>${formattedDate}</strong>: <strong style="color:#1E90FF;">${temp.min.toFixed(1)}°C</strong> ~ <strong style="color:#FF4500;">${temp.max.toFixed(1)}°C</strong> / ${skycon} / AQI: ${aqi} / 风速: ${windSpeed}km/h / ${windLevelAndName} / ${windDirection}风 / 日出: ${sunrise}, 日落: ${sunset}</li>`;
+                html += `<li><strong>${formattedDate}</strong>: <strong style="color:#1E90FF;">${temp.min.toFixed(1)}°C</strong> ~ <strong style="color:#FF4500;">${temp.max.toFixed(1)}°C</strong> / <strong>${skycon}</strong> / AQI: ${aqi} / 风速: ${windSpeed}km/h / ${windLevelAndName} / ${windDirection}风 / 日出: ${sunrise}, 日落: ${sunset}</li>`;
                 }
                 });
 				html += '</ul>';
@@ -188,27 +191,27 @@
                 labels: labels,
                 datasets: [
             {
-                label: '气温 (°C)',
+                label: '气温',
                 data: temperatureValues,
                 borderColor: 'rgba(255,69,0, 1)',
                 backgroundColor: 'rgba(255,69,0, 0.2)',
                 borderWidth: 2,
                 yAxisID: 'y1',
                 tension: 0.1,
-				pointRadius: 1.5
+				pointRadius: 1
             },
             {
-                label: '湿度 (%)',
+                label: '湿度',
                 data: humidityValues,
                 borderColor: 'rgba(105,105,105, 1)',
                 backgroundColor: 'rgba(105,105,105, 0.2)',
                 borderWidth: 2,
                 yAxisID: 'y2',
                 tension: 0.1,
-				pointRadius: 1.5
+				pointRadius: 1
             },
             {
-                label: '降水量 (mm/h)',
+                label: '降水量',
                 data: precipitationValues,
                 type: 'bar', // 改为柱状图
                 borderColor: 'rgba(54, 162, 235, 1)',
@@ -303,13 +306,13 @@
                         if (label) {
                             label += ': ';
                         }
-                        if (context.dataset.label === '降水量 (mm/h)' && context.parsed.y !== null) {
+                        if (context.dataset.label === '降水量' && context.parsed.y !== null) {
                             const intensity = context.parsed.y;
                             const skycon = realtime.skycon; // 从实际数据中获取天气情况
                             label += `${intensity.toFixed(1)}mm/h - ${getPrecipitationDescription(intensity, skycon)}`;
-                        } else if (context.dataset.label === '气温 (°C)' && context.parsed.y !== null) {
+                        } else if (context.dataset.label === '气温' && context.parsed.y !== null) {
                             label += `${context.parsed.y.toFixed(1)}°C`;
-                        } else if (context.dataset.label === '湿度 (%)' && context.parsed.y !== null) {
+                        } else if (context.dataset.label === '湿度' && context.parsed.y !== null) {
                             label += `${context.parsed.y.toFixed(0)}%`;
                         }
                         return label;
@@ -457,12 +460,58 @@
                 // 开始倒计时
 				updateCountdown();
 
+                // 和风天气灾害预警
+                async function fetchWeatherWarnings() {
+                const response = await fetch('https://devapi.qweather.com/v7/warning/now?location=经纬度&key=密钥');
+                const data = await response.json();
+                return data;
+                }
+
+                function getColorFromTitle(title) {
+                if (title.includes("黄色")) {
+                return "#FFD700";
+                } else if (title.includes("橙色")) {
+                return "#FF9518";
+                } else if (title.includes("红色")) {
+                return "#ED2246";
+                } else if (title.includes("蓝色")) {
+                return "#00A3FF";
+                } else {
+                return "#000000"; // 默认黑色
+            }
+        }
+
+                function displayWarnings(data) {
+                const container = document.getElementById('warnings-container');
+                container.innerHTML = '';
+
+                if (data.code === "200" && data.warning.length > 0) {
+                const warningList = document.createElement('ul');
+                warningList.classList.add('precipitation-info');
+
+                data.warning.forEach(warn => {
+                    const warningItem = document.createElement('li');
+                    const titleColor = getColorFromTitle(warn.title);
+                    warningItem.innerHTML = `
+                        <h4 style="color: ${titleColor};">${warn.title}</h4>
+                        <p class="warning-text">${warn.text}</p>
+                    `;
+                    warningList.appendChild(warningItem);
+                });
+
+                container.appendChild(warningList);
+            } else {
+                container.innerHTML = '<br><center><strong style="color:#008000; font-size: 18px;"><p>无预警信息</p></strong></center>';
+            }
+        }
+
+                document.addEventListener('DOMContentLoaded', async () => {
+                const data = await fetchWeatherWarnings();
+                displayWarnings(data);
+        });
     </script>
-<div class="weather-card" id="temperatureChartContainer">
-    <h2>小时级别气温/湿度/降水量预报</h2>
-    <button id="fullscreenButton">图表全屏</button>
-    <canvas id="temperatureChart"></canvas>
-</div>
-<div class="weather-card">彩云API更新频率：实况天气1分钟，小时级预报15分钟，天气级预报2小时，AQI数据1小时。<br><br> 本项目更新：https://github.com/Naivev/caiyunhtml</div>
+<div class="weather-card"><h2>灾害预警信息</h2><div id="warnings-container"></div></div>
+<div class="weather-card" id="temperatureChartContainer"><h2>小时级别气温/湿度/降水量预报</h2><button id="fullscreenButton">图表全屏</button><canvas id="temperatureChart"></canvas></div>
+<div class="weather-card">彩云API更新频率：实况天气1分钟，小时级预报15分钟，天气级预报2小时，AQI数据1小时。<br><br> 使用说明&更新：https://github.com/Naivev/caiyunhtml</div>
 </body>
 </html>
