@@ -5,14 +5,22 @@
 106-108行换成自己的api密钥和经纬度。
 
 例如：
+
 const LOCATION = '改成自己的';
+
 const CAIYUN = '改成自己的';
+
 const HEFENG = '改成自己的';
 
-换成
+
+换成：
+
 const LOCATION = '116.405419,39.924232';
+
 const CAIYUN = 'abcdefg';
+
 const HEFENG = 'abcdefg';
+
 
 
 彩云API申请：https://docs.caiyunapp.com/weather-api/index.html 免费1w次/天
