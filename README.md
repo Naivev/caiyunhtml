@@ -6,11 +6,11 @@
 
 例如：
 
-const LOCATION = '改成自己的';
+const LOCATION = '改成自己的';（经纬度）
 
-const CAIYUN = '改成自己的';
+const CAIYUN = '改成自己的'; （彩云api密钥）
 
-const HEFENG = '改成自己的';
+const HEFENG = '改成自己的';（和风api密钥）
 
 
 换成：
