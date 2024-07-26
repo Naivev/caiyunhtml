@@ -102,11 +102,16 @@
 
 
     <script>
-        function fetchWeather() {
-            const script = document.createElement('script');
-            script.src = 'https://api.caiyunapp.com/v2.6/密钥/经纬度/weather?unit=metric:v2&callback=displayWeather';
-            document.body.appendChild(script);
-        }
+// 定义经纬度和API密钥变量
+const LOCATION = '改成自己的';
+const CAIYUN = '改成自己的';
+const HEFENG = '改成自己的';
+
+function fetchWeather() {
+    const script = document.createElement('script');
+    script.src = `https://api.caiyunapp.com/v2.6/${CAIYUN}/${LOCATION}/weather?unit=metric:v2&callback=displayWeather`;
+    document.body.appendChild(script);
+}
 
         function displayWeather(data) {
             const weatherInfo = document.getElementById('weatherInfo');
@@ -136,13 +141,12 @@
                 html += `<p><strong>O₃:</strong> ${realtime.air_quality.o3}μg/m³ / <strong>CO:</strong> ${realtime.air_quality.co}mg/m³</p>`;
                 html += `<p><strong>NO₂:</strong> ${realtime.air_quality.no2}μg/m³ / <strong>SO₂:</strong> ${realtime.air_quality.so2}μg/m³</p>`;
                 html += `<p><strong>最近降水带距离:</strong> ${realtime.precipitation.nearest.distance.toFixed(0)} km</p>`;
-                html += `<p><strong>最近降水处强度:</strong> ${realtime.precipitation.nearest.intensity.toFixed(1)}mm/h - ${getPrecipitationDescription(realtime.precipitation.nearest.intensity, realtime.skycon)}</p>`;
                 html += `<p><strong>本地降水强度:</strong> ${realtime.precipitation.local.intensity.toFixed(1)}mm/h - ${getPrecipitationDescription(realtime.precipitation.local.intensity, realtime.skycon)}</p>`;
                 html += '</div></div>';
 
                 // 未来7天预报
                 async function fetchWeatherdate() {
-                const response = await fetch('https://devapi.qweather.com/v7/weather/7d?location=经纬度&key=密钥');
+                const response = await fetch(`https://devapi.qweather.com/v7/weather/7d?location=${LOCATION}&key=${HEFENG}`);
                 const data = await response.json();
                 return data;
                 }
@@ -178,7 +182,7 @@
                 });
                 html += '</ul>';
                 } else {
-                html += '<p>未来天气数据获取失败</p>';
+                html += '<br><center><strong style="color:#FF0000; font-size: 18px;"><p>数据获取失败</p></strong></center>';
                 }
                 html += '</div>';
 
@@ -483,7 +487,7 @@
 
                 // 和风天气灾害预警
                 async function fetchWeatherWarnings() {
-                const response = await fetch('https://devapi.qweather.com/v7/warning/now?location=经纬度&key=密钥');
+                const response = await fetch(`https://devapi.qweather.com/v7/warning/now?location=${LOCATION}&key=${HEFENG}`);
                 const data = await response.json();
                 return data;
                 }
@@ -540,8 +544,8 @@
         });
     </script>
 <div id="weather-card"></div>
-<div class="weather-card"><h2>灾害预警信息</h2><div id="warnings-container"></div></div>
-<div class="weather-card" id="temperatureChartContainer"><h2>小时级别气温/湿度/降水量预报</h2><button id="fullscreenButton">图表全屏</button><canvas id="temperatureChart"></canvas></div>
+<div class="weather-card"><h2>灾害预警</h2><div id="warnings-container"></div></div>
+<div class="weather-card" id="temperatureChartContainer"><h2>未来48小时预报</h2><button id="fullscreenButton">图表全屏</button><canvas id="temperatureChart"></canvas></div>
 <div class="weather-card">彩云天气API更新频率：实况天气1分钟，小时级预报15分钟。<br><br>和风天气API更新频率：天气预警3分钟，逐天天气预报60分钟。<br><br>因为彩云API免费版只支持未来48H的数据，所以实况天气和小时级预报使用彩云API，未来7天预报和灾害预警信息使用和风API。<br><br>为什么不都用和风API：因为个人本地实测彩云数据更准一点。<br><br> 使用说明&更新：https://github.com/Naivev/caiyunhtml</div>
 </body>
 </html>
