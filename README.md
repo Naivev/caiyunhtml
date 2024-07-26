@@ -2,16 +2,18 @@
 
 为什么不都用和风API：因为个人本地实测彩云数据更准一点。
 
-107，145和486行换成自己的api密钥和经纬度。
+106-108行换成自己的api密钥和经纬度。
 
 例如：
-把 https://api.caiyunapp.com/v2.6/密钥/经纬度/weather?unit=metric:v2&callback=displayWeather
+const LOCATION = '改成自己的';
+const CAIYUN = '改成自己的';
+const HEFENG = '改成自己的';
 
-换成： https://api.caiyunapp.com/v2.6/abcdefg/120.20,30.33/weather?unit=metric:v2&callback=displayWeather 即可
+换成
+const LOCATION = '116.405419,39.924232';
+const CAIYUN = 'abcdefg';
+const HEFENG = 'abcdefg';
 
-把 https://devapi.qweather.com/v7/warning/now?location=经纬度&key=密钥
-
-换成：https://devapi.qweather.com/v7/warning/now?location=120.20,30.33&key=abcdefg  即可
 
 彩云API申请：https://docs.caiyunapp.com/weather-api/index.html 免费1w次/天
 
