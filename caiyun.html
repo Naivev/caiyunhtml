@@ -187,7 +187,7 @@ function fetchWeather() {
                 html += '</div>';
 
                 // 将生成的 HTML 插入到页面中
-                document.getElementById('weather-card').innerHTML = html;
+                document.getElementById('weather-7').innerHTML = html;
                 }
 
                 // 调用函数以显示天气数据
@@ -527,14 +527,14 @@ function fetchWeather() {
                         border-radius: 8px;
                         margin: 0;
                         text-align: center;">${warn.title}</h4>
-                        <p class="warning-text">${warn.text}</p>
+                        <p class="warning-text">${warn.text.replace(/(\d{2}月\d{2}日\d{1,2}时\d{2}分)/g, '<strong>$1</strong>')}</p>
                     `;
                     warningList.appendChild(warningItem);
                 });
 
                 container.appendChild(warningList);
             } else {
-                container.innerHTML = '<br><center><strong style="color:#008000; font-size: 18px;"><p>无预警信息</p></strong></center>';
+                container.innerHTML = '<center><strong style="color:#008000; font-size: 18px;"><p>无预警信息</p></strong></center>';
             }
         }
 
@@ -543,9 +543,9 @@ function fetchWeather() {
                 displayWarnings(data);
         });
     </script>
-<div id="weather-card"></div>
 <div class="weather-card"><h2>灾害预警</h2><div id="warnings-container"></div></div>
 <div class="weather-card" id="temperatureChartContainer"><h2>未来48小时预报</h2><button id="fullscreenButton">图表全屏</button><canvas id="temperatureChart"></canvas></div>
+<div id="weather-7"></div>
 <div class="weather-card">彩云天气API更新频率：实况天气1分钟，小时级预报15分钟。<br><br>和风天气API更新频率：天气预警3分钟，逐天天气预报60分钟。<br><br>因为彩云API免费版只支持未来48H的数据，所以实况天气和小时级预报使用彩云API，未来7天预报和灾害预警信息使用和风API。<br><br>为什么不都用和风API：因为个人本地实测彩云数据更准一点。<br><br> 使用说明&更新：https://github.com/Naivev/caiyunhtml</div>
 </body>
 </html>
