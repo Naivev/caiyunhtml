@@ -31,4 +31,5 @@ const HEFENG = 'abcdefg';
 
 本地html，直接保存到本地用记事本改完api密钥和经纬度用浏览器打开就行。
 
-![image](https://github.com/user-attachments/assets/60f5549e-8ac0-4b8e-b361-e8da05309819)
+![image](https://github.com/user-attachments/assets/f39e5622-745f-4ac7-a92a-60d1cb9ba9ff)
+
